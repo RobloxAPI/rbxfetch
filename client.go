@@ -32,6 +32,7 @@ type Version = histlog.Version
 
 // Build represents information about a single Roblox build.
 type Build struct {
+	Type    string
 	GUID    string
 	Date    time.Time
 	Version Version
@@ -250,24 +251,12 @@ func (client *Client) Builds() (builds []Build, err error) {
 			continue
 		}
 		stream := histlog.Lex(b)
-		// Builds after this date are interoperable.
-		epoch := time.Date(2018, 8, 7, 0, 0, 0, 0, histlog.ZonePST())
 		for i := 0; i < len(stream); i++ {
 			switch job := stream[i].(type) {
 			case *histlog.Job:
-				// Only Studio builds.
-				if job.Build != "Studio" || !job.Time.After(epoch) {
-					continue
-				}
-				// Only completed builds.
-				if i+1 >= len(stream) {
-					continue
-				}
-				if status, ok := stream[i+1].(*histlog.Status); !ok || *status != "Done" {
-					continue
-				}
 				builds = append(builds, Build{
-					GUID:    job.Hash,
+					Type:    job.Build,
+					GUID:    job.GUID,
 					Date:    job.Time,
 					Version: job.Version,
 				})
