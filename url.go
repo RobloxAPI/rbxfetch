@@ -192,9 +192,6 @@ func (f *FilterURL) Read(p []byte) (n int, err error) {
 	if f.err != nil {
 		return 0, f.err
 	}
-	if len(p) == 0 {
-		return 0, nil
-	}
 	if f.r == nil {
 		f.r, err = f.fetch()
 		if err != nil {

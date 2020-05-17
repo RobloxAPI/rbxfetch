@@ -95,9 +95,6 @@ func (f *FilterIconScan) Read(p []byte) (n int, err error) {
 	if f.err != nil {
 		return 0, f.err
 	}
-	if len(p) == 0 {
-		return 0, nil
-	}
 	if f.buf.Len() == 0 {
 		if err := f.scan(); err != nil {
 			f.err = err
