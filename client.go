@@ -305,3 +305,16 @@ func (client *Client) ClassImages(guid string) (rc io.ReadCloser, err error) {
 	}
 	return nil, err
 }
+
+// Method runs the configured method for the given GUID. Returns nil if no such
+// method is configured.
+func (client *Client) Method(method, guid string) (rc io.ReadCloser, err error) {
+	for _, chain := range client.methods[method] {
+		var f iofl.Filter
+		if f, err = client.resolve(chain, guid); err != nil {
+			continue
+		}
+		return f, nil
+	}
+	return nil, err
+}
